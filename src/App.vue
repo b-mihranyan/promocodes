@@ -1,5 +1,6 @@
 <template>
-  <div class="main" @mouseup="stopDrag()" @mouseleave="stopDrag()">
+  <div class="main" @mouseup="stopDrag()" @mouseleave="stopDrag()" 
+    @touchend="stopDrag()">
     <audio
       id="rustling-audio"
       src="./src/assets/audio/leaves.mp3"
@@ -30,6 +31,8 @@
         class="main__body--leafs"
         @mousedown="startDrag(i, $event)"
         @mousemove="drag(i, $event)"
+        @touchstart="startDrag(i, $event)"
+        @touchmove="drag(i, $event)"
       />
       <div class="main__body--promo" :style="{ 'z-index': isOpenPromo ? 1 : 100 }" ref="promoBox">
         <span class="main__body--promo__title">Ваш промокод</span>
@@ -155,6 +158,9 @@ function startDrag(index, event) {
   audio.value.play()
   isOpenPromo.value = true
   event.preventDefault()
+  if (event.type === "touchstart") {
+    event = event.touches[0];
+  }
   dragData.value.isDragging = true
   dragData.value.elementIndex = index
   dragData.value.startX = event.clientX
@@ -165,6 +171,9 @@ function startDrag(index, event) {
 function drag(index, event) {
   if (!dragData.value.isDragging) return
   event.preventDefault()
+    if (event.type === "touchmove") {
+    event = event.touches[0];
+  }
   const deltaX = event.clientX - dragData.value.startX
   const deltaY = event.clientY - dragData.value.startY
   leafs.value[dragData.value.elementIndex].position.top =
