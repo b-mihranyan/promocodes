@@ -1,6 +1,10 @@
 <template>
-  <div class="main" @mouseup="stopDrag()" @mouseleave="stopDrag()" 
-    @touchend="stopDrag()">
+  <div
+    class="main"
+    @mouseup="stopDrag()"
+    @mouseleave="stopDrag()"
+    @touchend="stopDrag()"
+  >
     <audio
       id="rustling-audio"
       src="./src/assets/audio/leaves.mp3"
@@ -8,11 +12,20 @@
       ref="audio"
     ></audio>
     <div class="main__header">
-      <img src="./assets/img/header-logo.svg" alt="header" class="main__header--logo" />
+      <img
+        src="./assets/img/header-logo.svg"
+        alt="header"
+        class="main__header--logo"
+      />
       <div class="main__header--title">
-        <img src="./assets/img/percent.svg" alt="-25%" class="main__header--title__percent" />
+        <img
+          src="./assets/img/percent.svg"
+          alt="-25%"
+          class="main__header--title__percent"
+        />
         <span class="main__header--title__text">
-          На первый заказ от 1 000 рублей <br />в приложении «Пятёрочка Доставка»
+          На первый заказ от 1 000 рублей <br />в приложении «Пятёрочка
+          Доставка»
         </span>
       </div>
     </div>
@@ -22,10 +35,10 @@
         v-for="(leaf, i) in leafs"
         :src="leaf.src"
         :style="{
-          top: leaf.position.top + 'px',
-          left: leaf.position.left + 'px',
-          width: leaf.position.width + 'px',
-          'z-index': leaf.position.zIndex
+          top: leaf.position.top + '%',
+          left: leaf.position.left + '%',
+          width: leaf.position.width + '%',
+          'z-index': leaf.position.zIndex,
         }"
         :key="'leaf_' + i"
         class="main__body--leafs"
@@ -34,7 +47,11 @@
         @touchstart="startDrag(i, $event)"
         @touchmove="drag(i, $event)"
       />
-      <div class="main__body--promo" :style="{ 'z-index': isOpenPromo ? 1 : 100 }" ref="promoBox">
+      <div
+        class="main__body--promo"
+        :style="{ 'z-index': isOpenPromo ? 1 : 100 }"
+        ref="promoBox"
+      >
         <span class="main__body--promo__title">Ваш промокод</span>
         <span v-if="isOpenPromo" class="main__body--promo__text">
           {{ currentPromo }}
@@ -48,7 +65,11 @@
       </div>
       <div class="main__body--qr" :style="{ 'z-index': isOpenPromo ? 1 : 100 }">
         <div class="main__body--qr__logobox">
-          <img src="./assets/img/qr-logo.svg" alt="qr-logo" class="main__body--qr__logo" />
+          <img
+            src="./assets/img/qr-logo.svg"
+            alt="qr-logo"
+            class="main__body--qr__logo"
+          />
           <img src="./assets/img/qr.svg" alt="qr" class="main__body--qr__img" />
         </div>
         <span class="main__body--qr__text">
@@ -57,7 +78,11 @@
         </span>
       </div>
       <div v-if="!isOpenPromo" class="main__body--title">
-        <img src="./assets/img/finger.svg" alt="finger" class="main__body--title__img" />
+        <img
+          src="./assets/img/finger.svg"
+          alt="finger"
+          class="main__body--title__img"
+        />
         <span class="main__body--title__text">
           Пошуршите листьями,<br />
           заберите промокод
@@ -67,9 +92,10 @@
 
     <div class="main__footer">
       <span>
-        Продавец ООО «Агроторг», ОГРН 1027809237796, г. Санкт-Петербург, Невский проспект, д. 90/92.
-        Указанное время доставки не включает в себя время на приём, обработку и сбор заказа. Зона и
-        время доставки ограничены. Подробные условия в мобильном приложении «Пятёрочка Доставка» или
+        Продавец ООО «Агроторг», ОГРН 1027809237796, г. Санкт-Петербург, Невский
+        проспект, д. 90/92. Указанное время доставки не включает в себя время на
+        приём, обработку и сбор заказа. Зона и время доставки ограничены.
+        Подробные условия в мобильном приложении «Пятёрочка Доставка» или
         «Пятёрочка». Реклама.
       </span>
     </div>
@@ -77,61 +103,66 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeMount } from 'vue'
-import $cookies from 'js-cookie'
-import leafList from './assets/js/leafs'
-import promos from './assets/js/promos' // We will get promocodes from backend
+import { ref, onMounted, onBeforeMount } from "vue";
+import $cookies from "js-cookie";
+import leafList from "./assets/js/leafs";
+import promos from "./assets/js/promos"; // We will get promocodes from backend
 
-const isOpenPromo = ref(false)
-const audio = ref(null)
-const currentUser = ref(`osen_banner1`) // We will get utm-s from route params
-const currentPromo = ref(null)
-const promoBox = ref(null)
-const leafs = ref([])
+const isOpenPromo = ref(false);
+const audio = ref(null);
+const currentUser = ref(`osen_banner1`); // We will get utm-s from route params
+const currentPromo = ref(null);
+const promoBox = ref(null);
+const leafs = ref([]);
 
 onBeforeMount(() => {
-  randomizeLeafs()
-})
+  randomizeLeafs();
+});
 
 onMounted(() => {
-  const userData = currentUser.value
+  const userData = currentUser.value;
   if ($cookies.get(userData)) {
-    isOpenPromo.value = true
-    currentPromo.value = $cookies.get(userData)
-    leafs.value = []
+    isOpenPromo.value = true;
+    currentPromo.value = $cookies.get(userData);
+    leafs.value = [];
   } else {
-    const promoIndex = Math.floor(Math.random() * promos.length)
-    currentPromo.value = promos.splice(promoIndex, 1).join('')
-    $cookies.set(userData, currentPromo.value) // We will send backend userData and promocode for mark this promo
+    const promoIndex = Math.floor(Math.random() * promos.length);
+    currentPromo.value = promos.splice(promoIndex, 1).join("");
+    $cookies.set(userData, currentPromo.value); // We will send backend userData and promocode for mark this promo
   }
-})
+});
 
 const copyPromo = () => {
-  navigator.clipboard.writeText(currentPromo.value)
-}
+  navigator.clipboard.writeText(currentPromo.value);
+};
 
 const randomizeLeafs = () => {
-  const leafsCount = Math.floor(Math.random() * 11) + 20
+  const leafsCount = Math.floor(Math.random() * 20) + 30;
   for (let i = 0; i < leafsCount; i++) {
-    randomLeaf(i)
+    randomLeaf(i);
   }
-}
+};
 
 const randomLeaf = (i) => {
-  const leafNumber = Math.floor(Math.random() * leafList.length)
+  const leafNumber = Math.floor(Math.random() * leafList.length);
 
-  const minWidth = Math.floor(window.innerWidth * 0.2)
-  const maxWidth = Math.floor(window.innerWidth * 0.3)
-  const minHeight = Math.floor(window.innerHeight * 0.2)
-  const maxHeight = Math.floor(window.innerHeight * 0.3)
-  const minTop = Math.floor(window.innerHeight * 0.25)
-  const maxTop = Math.floor(window.innerHeight * 0.75)
+  const minWidth = 15;
+  const maxWidth = 30;
+  const minHeight = 15;
+  const maxHeight = 30;
+  const minTop = 30;
+  const maxTop = 70;
+  const minLeft = 0;
+  const maxleft = 80;
 
-  const randomWidth = Math.floor(Math.random() * (maxWidth - minWidth + 1)) + minWidth
-  const randomHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight
+  const randomWidth =
+    Math.floor(Math.random() * (maxWidth - minWidth + 1)) + minWidth;
+  const randomHeight =
+    Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
 
-  const randomTop = Math.floor(Math.random() * (maxTop - minTop + 1)) + minTop
-  const randomLeft = Math.floor(Math.random() * window.innerWidth * 0.75)
+  const randomTop = Math.floor(Math.random() * (maxTop - minTop + 1)) + minTop;
+  const randomLeft =
+    Math.floor(Math.random() * (maxleft - minLeft + 1)) + minLeft;
 
   leafs.value.push({
     src: leafList[leafNumber],
@@ -140,10 +171,10 @@ const randomLeaf = (i) => {
       left: randomLeft,
       width: randomWidth,
       height: randomHeight,
-      zIndex: 999
-    }
-  })
-}
+      zIndex: 999,
+    },
+  });
+};
 
 const dragData = ref({
   isDragging: false,
@@ -151,43 +182,46 @@ const dragData = ref({
   startX: 0,
   startY: 0,
   currentX: 0,
-  currentY: 0
-})
+  currentY: 0,
+});
 
 function startDrag(index, event) {
-  audio.value.play()
-  isOpenPromo.value = true
-  event.preventDefault()
+  audio.value.play();
+  isOpenPromo.value = true;
+  event.preventDefault();
   if (event.type === "touchstart") {
     event = event.touches[0];
   }
-  dragData.value.isDragging = true
-  dragData.value.elementIndex = index
-  dragData.value.startX = event.clientX
-  dragData.value.startY = event.clientY
-  leafs.value[index].position.zIndex = 9999
+  console.log(event.clientX);
+  dragData.value.isDragging = true;
+  dragData.value.elementIndex = index;
+  dragData.value.startX = event.clientX;
+  dragData.value.startY = event.clientY;
+  leafs.value[index].position.zIndex = 9999;
 }
 
 function drag(index, event) {
-  if (!dragData.value.isDragging) return
-  event.preventDefault()
-    if (event.type === "touchmove") {
+  event.preventDefault();
+  if (event.type === "touchmove") {
     event = event.touches[0];
   }
-  const deltaX = event.clientX - dragData.value.startX
-  const deltaY = event.clientY - dragData.value.startY
+  if (!dragData.value.isDragging) return;
+  const deltaX = event.clientX - dragData.value.startX;
+  const deltaY = event.clientY - dragData.value.startY;
+  const newTop = dragData.value.startY + deltaY - event.target.height / 2;
+  const newLeft = dragData.value.startX + deltaX - event.target.width / 2;
   leafs.value[dragData.value.elementIndex].position.top =
-    dragData.value.startY + deltaY - leafs.value[index].position.height / 2
+    (newTop / window.innerHeight) * 100;
   leafs.value[dragData.value.elementIndex].position.left =
-    dragData.value.startX + deltaX - leafs.value[index].position.width / 2
+    (newLeft / window.innerWidth) * 100;
 }
 
 function stopDrag() {
-  audio.value.pause()
+  audio.value.pause();
   if (dragData.value.elementIndex) {
-    leafs.value[dragData.value.elementIndex].position.zIndex = 2
+    leafs.value[dragData.value.elementIndex].position.zIndex = 2;
   }
-  dragData.value.isDragging = false
+  dragData.value.isDragging = false;
 }
 </script>
 
@@ -196,7 +230,8 @@ function stopDrag() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
+  height: calc(100vh - 40px);
   .audio {
     display: none;
   }
@@ -374,7 +409,7 @@ function stopDrag() {
   }
 }
 
-@media (max-width: 768px) and (max-height: 1024px) {
+@media (max-width: 960px) {
   .main {
     &__header {
       &--logo {
@@ -445,7 +480,7 @@ function stopDrag() {
   }
 }
 
-@media (max-width: 320px) and (max-height: 630px) {
+@media (max-width: 570px) {
   .main {
     &__header {
       &--logo {
@@ -521,7 +556,7 @@ function stopDrag() {
   }
 }
 
-@media (max-width: 320px) and (max-height: 568px) {
+@media (max-height: 568px) {
   .main {
     &__header {
       &--logo {
