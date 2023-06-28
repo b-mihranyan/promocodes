@@ -38,6 +38,7 @@
           top: leaf.position.top + '%',
           left: leaf.position.left + '%',
           width: leaf.position.width + '%',
+          height: leaf.position.height + '%',
           'z-index': leaf.position.zIndex,
         }"
         :key="'leaf_' + i"
@@ -122,7 +123,7 @@ const openLeafs = () => {
         elem.position.left += index > 10 ? 1 : -1;
       }
       let count = index % 2 ? index : -index;
-      let max = index % 2 ? 40 : 70;
+      let max = index % 2 ? 20 : 50;
       if (index > 10) {
         elem.position.top = max + count / 2;
       } else {
@@ -162,14 +163,13 @@ const randomizeLeafs = () => {
 
 const randomLeaf = (i) => {
   const leafNumber = i < leafList.length ? i : i % leafList.length;
-
-  const maxWidth = 20 + (i % 2);
-  const maxHeight = 20 + (i % 2);
-  const maxTop = 40;
-  const minLeft = 5;
+  const maxWidth = 30 + (i % 2);
+  const maxHeight = 60 + (i % 2);
+  const maxTop = 48;
+  const minLeft = 0;
   const randomWidth = maxWidth;
   const randomHeight = maxHeight;
-  const randomTop = i > 17 ? maxTop + i / 2 : maxTop + 15 - i;
+  const randomTop = i % 2 ? maxTop : maxTop - 12;
   const randomLeft = i > 10 && i < 20 ? minLeft + i * 2 : minLeft + i * 2.5;
 
   leafs.value.push({
