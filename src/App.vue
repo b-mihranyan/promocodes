@@ -154,7 +154,7 @@ const copyPromo = () => {
 };
 
 const randomizeLeafs = () => {
-  const leafsCount = 20;
+  const leafsCount = 30;
   for (let i = 0; i < leafsCount; i++) {
     randomLeaf(i);
   }
@@ -169,13 +169,8 @@ const randomLeaf = (i) => {
   const minLeft = 5;
   const randomWidth = maxWidth;
   const randomHeight = maxHeight;
-  const randomTop = i > 10 ? maxTop + i / 2 : maxTop + 10 - i;
-  const randomLeft =
-    i > 10 && i < 15
-      ? minLeft + i * 2.5
-      : i > 15
-      ? minLeft + i * 3
-      : minLeft + i * 4;
+  const randomTop = i > 17 ? maxTop + i / 2 : maxTop + 15 - i;
+  const randomLeft = i > 10 && i < 20 ? minLeft + i * 2 : minLeft + i * 2.5;
 
   leafs.value.push({
     src: leafList[leafNumber],
