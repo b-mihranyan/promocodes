@@ -116,13 +116,17 @@ const promoBox = ref(null);
 const leafs = ref([]);
 
 const openLeafs = () => {
-  leafs.value.forEach((elem) => {
+  leafs.value.forEach((elem, index) => {
     setInterval(() => {
-      if (elem.position.left > 0 && elem.position.left < 70) {
-        elem.position.left += elem.position.left > 40 ? 1 : -1;
+      if (elem.position.left > 0 && elem.position.left < 80) {
+        elem.position.left += index > 10 ? 1 : -1;
       }
-      if (elem.position.top > 30 && elem.position.top < 60) {
-        elem.position.top += elem.position.top > 45 ? 1 : -1;
+      let count = index % 2 ? index : -index;
+      let max = index % 2 ? 40 : 70;
+      if (index > 10) {
+        elem.position.top = max + count / 2;
+      } else {
+        elem.position.top = max + count;
       }
     }, 0);
   });
@@ -159,8 +163,8 @@ const randomizeLeafs = () => {
 const randomLeaf = (i) => {
   const leafNumber = i < leafList.length ? i : i % leafList.length;
 
-  const maxWidth = 35;
-  const maxHeight = 35;
+  const maxWidth = 20 + (i % 2);
+  const maxHeight = 20 + (i % 2);
   const maxTop = 40;
   const minLeft = 5;
   const randomWidth = maxWidth;
