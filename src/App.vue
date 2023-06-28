@@ -115,6 +115,19 @@ const currentPromo = ref(null);
 const promoBox = ref(null);
 const leafs = ref([]);
 
+const openLeafs = () => {
+  leafs.value.forEach((elem) => {
+    setInterval(() => {
+      if (elem.position.left > 0 && elem.position.left < 70) {
+        elem.position.left += elem.position.left > 40 ? 1 : -1;
+      }
+      if (elem.position.top > 30 && elem.position.top < 60) {
+        elem.position.top += elem.position.top > 45 ? 1 : -1;
+      }
+    }, 0);
+  });
+};
+
 onBeforeMount(() => {
   randomizeLeafs();
 });
@@ -124,7 +137,7 @@ onMounted(() => {
   if ($cookies.get(userData)) {
     isOpenPromo.value = true;
     currentPromo.value = $cookies.get(userData);
-    leafs.value = [];
+    openLeafs();
   } else {
     const promoIndex = Math.floor(Math.random() * promos.length);
     currentPromo.value = promos.splice(promoIndex, 1).join("");
@@ -137,32 +150,28 @@ const copyPromo = () => {
 };
 
 const randomizeLeafs = () => {
-  const leafsCount = Math.floor(Math.random() * 20) + 30;
+  const leafsCount = 20;
   for (let i = 0; i < leafsCount; i++) {
     randomLeaf(i);
   }
 };
 
 const randomLeaf = (i) => {
-  const leafNumber = Math.floor(Math.random() * leafList.length);
+  const leafNumber = i < leafList.length ? i : i % leafList.length;
 
-  const minWidth = 15;
-  const maxWidth = 30;
-  const minHeight = 15;
-  const maxHeight = 30;
-  const minTop = 30;
-  const maxTop = 70;
-  const minLeft = 0;
-  const maxleft = 80;
-
-  const randomWidth =
-    Math.floor(Math.random() * (maxWidth - minWidth + 1)) + minWidth;
-  const randomHeight =
-    Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
-
-  const randomTop = Math.floor(Math.random() * (maxTop - minTop + 1)) + minTop;
+  const maxWidth = 35;
+  const maxHeight = 35;
+  const maxTop = 40;
+  const minLeft = 5;
+  const randomWidth = maxWidth;
+  const randomHeight = maxHeight;
+  const randomTop = i > 10 ? maxTop + i / 2 : maxTop + 10 - i;
   const randomLeft =
-    Math.floor(Math.random() * (maxleft - minLeft + 1)) + minLeft;
+    i > 10 && i < 15
+      ? minLeft + i * 2.5
+      : i > 15
+      ? minLeft + i * 3
+      : minLeft + i * 4;
 
   leafs.value.push({
     src: leafList[leafNumber],
@@ -353,6 +362,7 @@ function stopDrag() {
     }
     &--leafs {
       position: absolute;
+      transition: transform 1s;
     }
   }
 
