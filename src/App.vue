@@ -34,13 +34,7 @@
       <img
         v-for="(leaf, i) in leafs"
         :src="leaf.src"
-        :style="{
-          top: leaf.position.top + '%',
-          left: leaf.position.left + '%',
-          width: leaf.position.width + '%',
-          height: leaf.position.height + '%',
-          'z-index': leaf.position.zIndex,
-        }"
+        :style="leaf.position"
         :key="'leaf_' + i"
         class="main__body--leafs"
         @mousedown="startDrag(i, $event)"
@@ -119,16 +113,15 @@ const leafs = ref([]);
 const openLeafs = () => {
   leafs.value.forEach((elem, index) => {
     setInterval(() => {
-      if (elem.position.left > 0 && elem.position.left < 80) {
-        elem.position.left += index > 10 ? 1 : -1;
+      if (index === 0 || index === 1) return;
+      const left = parseFloat(elem.position.left);
+      if (left > -10 && left < 80) {
+        const newLeft = left + (index > 20 ? 1 : -1);
+        elem.position.left = `${newLeft}%`;
       }
       let count = index % 2 ? index : -index;
-      let max = index % 2 ? 20 : 50;
-      if (index > 10) {
-        elem.position.top = max + count / 2;
-      } else {
-        elem.position.top = max + count;
-      }
+      let max = index % 2 ? 40 : 80;
+      elem.position.top = `${max + count}%`;
     }, 0);
   });
 };
@@ -138,6 +131,7 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
+  console.log(leafList.length);
   const userData = currentUser.value;
   if ($cookies.get(userData)) {
     isOpenPromo.value = true;
@@ -155,30 +149,65 @@ const copyPromo = () => {
 };
 
 const randomizeLeafs = () => {
-  const leafsCount = 30;
+  const leafsCount = 40;
   for (let i = 0; i < leafsCount; i++) {
     randomLeaf(i);
   }
 };
 
 const randomLeaf = (i) => {
+  if (i === 0) {
+    leafs.value.push({
+      src: leafList[14],
+      position: {
+        top: "10%",
+        left: "80%",
+        width: "10%",
+        height: "10%",
+        transform: `rotate(-160deg)`,
+        zIndex: 999,
+      },
+    });
+    return;
+  } else if (i === 1) {
+    leafs.value.push({
+      src: leafList[8],
+      position: {
+        top: "30%",
+        left: "15%",
+        width: "10%",
+        height: "10%",
+        transform: `rotate(125deg)`,
+        zIndex: 999,
+      },
+    });
+    return;
+  }
   const leafNumber = i < leafList.length ? i : i % leafList.length;
   const maxWidth = 30 + (i % 2);
-  const maxHeight = 60 + (i % 2);
-  const maxTop = 48;
-  const minLeft = 0;
+  const maxHeight = 30 + (i % 2);
+  const maxTop = window.innerWidth < 500 ? 50 : 40;
+  const topRange = window.innerWidth < 500 ? 5 : 10;
+  const minLeft = 5;
   const randomWidth = maxWidth;
   const randomHeight = maxHeight;
-  const randomTop = i % 2 ? maxTop : maxTop - 12;
-  const randomLeft = i > 10 && i < 20 ? minLeft + i * 2 : minLeft + i * 2.5;
+  const randomTop =
+    i % 4 === 1
+      ? maxTop
+      : i % 4 === 2
+      ? maxTop + topRange
+      : i % 4 === 3
+      ? maxTop + topRange * 2
+      : maxTop + topRange * 3.5;
+  const randomLeft = i > 10 && i < 30 ? minLeft + i * 1.5 : minLeft + i * 1.5;
 
   leafs.value.push({
-    src: leafList[leafNumber],
+    src: leafList[leafNumber === 8 ? 4 : leafNumber],
     position: {
-      top: randomTop,
-      left: randomLeft,
-      width: randomWidth,
-      height: randomHeight,
+      top: `${randomTop}%`,
+      left: `${randomLeft}%`,
+      width: `${randomWidth}%`,
+      height: `${randomHeight}%`,
       zIndex: 999,
     },
   });
@@ -218,10 +247,12 @@ function drag(index, event) {
   const deltaY = event.clientY - dragData.value.startY;
   const newTop = dragData.value.startY + deltaY - event.target.height / 2;
   const newLeft = dragData.value.startX + deltaX - event.target.width / 2;
-  leafs.value[dragData.value.elementIndex].position.top =
-    (newTop / window.innerHeight) * 100;
-  leafs.value[dragData.value.elementIndex].position.left =
-    (newLeft / window.innerWidth) * 100;
+  leafs.value[dragData.value.elementIndex].position.top = `${
+    (newTop / window.innerHeight) * 100
+  }%`;
+  leafs.value[dragData.value.elementIndex].position.left = `${
+    (newLeft / window.innerWidth) * 100
+  }%`;
 }
 
 function stopDrag() {
@@ -531,6 +562,7 @@ function stopDrag() {
       &--title {
         gap: 45px;
         margin-top: 200px;
+        bottom: 200px;
         font-size: 14px;
         line-height: 16px;
         &__img {
