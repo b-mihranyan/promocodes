@@ -6,6 +6,7 @@ import leafOrange2 from "./../img/leafs/leaf-orange-2.svg";
 import leafRed from "./../img/leafs/leaf-red.svg";
 import leafRed2 from "./../img/leafs/leaf-red-2.svg";
 import leafYellow from "./../img/leafs/leaf-yellow.svg";
+import leafYellow2 from "./../img/leafs/leaf-yellow-2.svg";
 import mushroom from "./../img/leafs/mushroom.svg";
 import mushroom2 from "./../img/leafs/mushroom-2.svg";
 import orange from "./../img/leafs/orange.svg";
@@ -23,6 +24,7 @@ export default [
   leafRed,
   leafRed2,
   leafYellow,
+  leafYellow2,
   mushroom,
   mushroom2,
   orange,
